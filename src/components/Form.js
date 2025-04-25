@@ -13,9 +13,14 @@ const Form = () => {
   } = useForm();
 
   const onSubmit = (data) => {
+    // Format the date to DD-MM-YY
+    const date = new Date(data.date);
+    const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getFullYear()).slice(-2)}`;
+    
     const newEntry = {
       id: Date.now(),
       ...data,
+      date: formattedDate,
     };
     dispatch(addData(newEntry));
     reset();
@@ -66,6 +71,26 @@ const Form = () => {
           />
           {errors.age && (
             <p className="mt-1 text-sm text-red-600">{errors.age.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Date</label>
+          <input
+            type="date"
+            {...register('date', {
+              required: 'Date is required',
+              validate: {
+                validFormat: (value) => {
+                  const date = new Date(value);
+                  return !isNaN(date.getTime()) || 'Invalid date format';
+                },
+              },
+            })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+          {errors.date && (
+            <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
           )}
         </div>
 
