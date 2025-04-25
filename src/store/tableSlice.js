@@ -18,6 +18,7 @@ const initialState = {
   itemsPerPage: 10,
   sortConfig: { key: null, direction: 'asc' },
   searchTerm: '',
+  editingId: null,
 };
 
 const tableSlice = createSlice({
@@ -26,6 +27,18 @@ const tableSlice = createSlice({
   reducers: {
     addData: (state, action) => {
       state.data.push(action.payload);
+    },
+    updateData: (state, action) => {
+      const index = state.data.findIndex(item => item.id === action.payload.id);
+      if (index !== -1) {
+        state.data[index] = action.payload;
+      }
+    },
+    deleteData: (state, action) => {
+      state.data = state.data.filter(item => item.id !== action.payload);
+    },
+    setEditingId: (state, action) => {
+      state.editingId = action.payload;
     },
     setFilteredData: (state, action) => {
       state.filteredData = action.payload;
@@ -42,5 +55,15 @@ const tableSlice = createSlice({
   },
 });
 
-export const { addData, setFilteredData, setCurrentPage, setSortConfig, setSearchTerm } = tableSlice.actions;
+export const {
+  addData,
+  updateData,
+  deleteData,
+  setEditingId,
+  setFilteredData,
+  setCurrentPage,
+  setSortConfig,
+  setSearchTerm,
+} = tableSlice.actions;
+
 export default tableSlice.reducer; 
